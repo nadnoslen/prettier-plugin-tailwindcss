@@ -59,25 +59,29 @@ function sortClasses(
     suffix = `${whitespace.pop() ?? ''}${classes.pop() ?? ''}`
   }
 
-  let classNamesWithOrder = []
-  for (let className of classes) {
-    let order =
-      env
-        .generateRules(new Set([className]), env.context)
-        .sort(([a], [z]) => bigSign(z - a))[0]?.[0] ?? null
-    classNamesWithOrder.push([className, order])
-  }
+  if (env.context.sortClassList) {
+    classes = env.context.sortClassList(classes)
+  } else {
+    let classNamesWithOrder = []
+    for (let className of classes) {
+      let order =
+        env
+          .generateRules(new Set([className]), env.context)
+          .sort(([a], [z]) => bigSign(z - a))[0]?.[0] ?? null
+      classNamesWithOrder.push([className, order])
+    }
 
-  classes = classNamesWithOrder
-    .sort(([, a], [, z]) => {
-      if (a === z) return 0
-      // if (a === null) return options.unknownClassPosition === 'start' ? -1 : 1
-      // if (z === null) return options.unknownClassPosition === 'start' ? 1 : -1
-      if (a === null) return -1
-      if (z === null) return 1
-      return bigSign(a - z)
-    })
-    .map(([className]) => className)
+    classes = classNamesWithOrder
+      .sort(([, a], [, z]) => {
+        if (a === z) return 0
+        // if (a === null) return options.unknownClassPosition === 'start' ? -1 : 1
+        // if (z === null) return options.unknownClassPosition === 'start' ? 1 : -1
+        if (a === null) return -1
+        if (z === null) return 1
+        return bigSign(a - z)
+      })
+      .map(([className]) => className)
+  }
 
   for (let i = 0; i < classes.length; i++) {
     result += `${classes[i]}${whitespace[i] ?? ''}`
