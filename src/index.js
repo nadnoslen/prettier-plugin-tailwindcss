@@ -1,24 +1,26 @@
+import * as fs from 'fs'
+import * as path from 'path'
+
+import * as astTypes from 'ast-types'
+import requireFresh from 'import-fresh'
+import requireFrom from 'import-from'
+import jsesc from 'jsesc'
+import lineColumn from 'line-column'
+import objectHash from 'object-hash'
 import prettier from 'prettier'
-import prettierParserHTML from 'prettier/parser-html'
-import prettierParserPostCSS from 'prettier/parser-postcss'
+import * as svelte from 'prettier-plugin-svelte'
 import prettierParserBabel from 'prettier/parser-babel'
 import prettierParserEspree from 'prettier/parser-espree'
-import prettierParserMeriyah from 'prettier/parser-meriyah'
 import prettierParserFlow from 'prettier/parser-flow'
+import prettierParserGlimmer from 'prettier/parser-glimmer'
+import prettierParserHTML from 'prettier/parser-html'
+import prettierParserMeriyah from 'prettier/parser-meriyah'
+import prettierParserPostCSS from 'prettier/parser-postcss'
 import prettierParserTypescript from 'prettier/parser-typescript'
-import { createContext as createContextFallback } from 'tailwindcss/lib/lib/setupContextUtils'
-import { generateRules as generateRulesFallback } from 'tailwindcss/lib/lib/generateRules'
-import resolveConfigFallback from 'tailwindcss/resolveConfig'
 import * as recast from 'recast'
-import * as astTypes from 'ast-types'
-import * as path from 'path'
-import * as fs from 'fs'
-import requireFrom from 'import-from'
-import requireFresh from 'import-fresh'
-import objectHash from 'object-hash'
-import * as svelte from 'prettier-plugin-svelte'
-import lineColumn from 'line-column'
-import jsesc from 'jsesc'
+import { generateRules as generateRulesFallback } from 'tailwindcss/lib/lib/generateRules'
+import { createContext as createContextFallback } from 'tailwindcss/lib/lib/setupContextUtils'
+import resolveConfigFallback from 'tailwindcss/resolveConfig'
 
 let contextMap = new Map()
 
@@ -377,6 +379,10 @@ export const parsers = {
   meriyah: createParser(
     prettierParserMeriyah.parsers.meriyah,
     transformJavaScript
+  ),
+  glimmer: createParser(
+    prettierParserGlimmer.parsers.glimmer,
+    transformHtml(['class'])
   ),
   __js_expression: createParser(
     prettierParserBabel.parsers.__js_expression,
